@@ -22,5 +22,13 @@ wps excel embed image
 本库的操作原理就是基于此文章
 
 # 运行示例
-
+创建虚拟环境
+```shell
+#导入requirements.txt
+pip install -r requirements.txt
+```
 运行main.py脚本
+
+# 建议
+
+仅适用于最终处理阶段，因为嵌入后如果再用代码对excel进行修改则图片会丢失
