@@ -272,6 +272,9 @@ def embed_image(excel_path: str, new_excel_path: str, sheet_name: str, cell_name
         add_sheet_data(unzip_file_path, sheet_name, ID, cell_index, index + 1)
     zip_file(unzip_file_path, new_excel_path)
 
+    if os.path.exists(unzip_file_path):
+        shutil.rmtree(unzip_file_path)
+
 
 def main():
     embed_image("old.xlsx", "new.xlsx", "Sheet1", "pic")
