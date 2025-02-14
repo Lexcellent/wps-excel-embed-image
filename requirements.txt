@@ -1,0 +1,16 @@
+certifi==2025.1.31
+charset-normalizer==3.4.1
+et_xmlfile==2.0.0
+idna==3.10
+loguru==0.7.3
+lxml==5.3.1
+numpy==2.2.3
+openpyxl==3.1.5
+pandas==2.2.3
+pillow==11.1.0
+python-dateutil==2.9.0.post0
+pytz==2025.1
+requests==2.32.3
+six==1.17.0
+tzdata==2025.1
+urllib3==2.3.0
