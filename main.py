@@ -238,7 +238,7 @@ def add_sheet_data(unzip_file_path, sheet_name, ID, cell_index, row_index):
 
 def embed_image(excel_path: str, new_excel_path: str, sheet_name: str, cell_name: str):
     # 解压excel
-    unzip_file_path = "excelUnZipDir"
+    unzip_file_path = f"{excel_path}excelUnZipDir"
     if os.path.exists(unzip_file_path):
         shutil.rmtree(unzip_file_path)
     unzip_file(excel_path, unzip_file_path)
