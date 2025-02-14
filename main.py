@@ -202,26 +202,6 @@ def add_new_node(image_path: str, unzip_file_path: str):
     return ID
 
 
-def get_cell_word(unzip_file_path: str, sheet_name: str, cell_name: str):
-    # 创建解析器时关闭 DTD 和校验
-    parser = etree.XMLParser(
-        load_dtd=False,  # 不加载 DTD
-        no_network=True,  # 禁止网络请求（防止自动下载 DTD）
-        dtd_validation=False,  # 关闭 DTD 校验
-        attribute_defaults=False,
-        recover=True
-    )
-    tree = etree.parse(os.path.join(unzip_file_path, 'xl', 'sharedStrings.xml'), parser=parser)
-    root = tree.getroot()
-    sis = root.findall('{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si')
-    index = 0
-    for si in sis:
-        if si.find('{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t').text == cell_name:
-            return index
-        index += 1
-    return index
-
-
 def add_sheet_data(unzip_file_path, sheet_name, ID, cell_index, row_index):
     # 创建解析器时关闭 DTD 和校验
     parser = etree.XMLParser(
@@ -262,9 +242,10 @@ def embed_image(excel_path: str, new_excel_path: str, sheet_name: str, cell_name
     if os.path.exists(unzip_file_path):
         shutil.rmtree(unzip_file_path)
     unzip_file(excel_path, unzip_file_path)
-
-    cell_index = get_cell_word(unzip_file_path, sheet_name, cell_name)
-    logger.debug(f"cell_index: {cell_index}")
+    # 读取Excel文件
+    df = pd.read_excel(excel_path, sheet_name=sheet_name)
+    cell_index = df.columns.get_loc(cell_name)
+    logger.debug(f"Column '{cell_name}' is at index: {cell_index}")
     df: DataFrame = pd.read_excel(excel_path, sheet_name=sheet_name)
     for index in range(len(df.get(cell_name))):
         picRow = df.get(cell_name)[index]
@@ -277,7 +258,7 @@ def embed_image(excel_path: str, new_excel_path: str, sheet_name: str, cell_name
 
 
 def main():
-    embed_image("old.xlsx", "new.xlsx", "Sheet1", "pic")
+    embed_image("old.xlsx", "new.xlsx", "Sheet1", "图片")
 
 
 if __name__ == '__main__':
