@@ -206,13 +206,13 @@ def add_new_node_workbook(excel_unzip_dir: str):
     tree.write(xmlPath, pretty_print=True, xml_declaration=True, encoding='UTF-8')
 
 
-def add_new_node(image_path: str, unzip_file_path: str):
-    add_new_node_content_types(unzip_file_path)
-    add_new_node_workbook(unzip_file_path)
+def add_new_node(image_path: str, unzip_dir_path: str):
+    add_new_node_content_types(unzip_dir_path)
+    add_new_node_workbook(unzip_dir_path)
 
-    image_name, image_path = copy_image_to_excel_dir(image_path, unzip_file_path)
-    ID, RID = add_new_node_cell_images(image_path, unzip_file_path)
-    add_new_node_cell_images_rels(image_name, RID, unzip_file_path)
+    image_name, image_path = copy_image_to_excel_dir(image_path, unzip_dir_path)
+    ID, RID = add_new_node_cell_images(image_path, unzip_dir_path)
+    add_new_node_cell_images_rels(image_name, RID, unzip_dir_path)
     return ID
 
 
@@ -250,25 +250,25 @@ def add_sheet_data(unzip_file_path, sheet_name, ID, cell_index, row_index):
     tree.write(xmlPath, pretty_print=True, xml_declaration=True, encoding='UTF-8')
 
 
-def embed_image(excel_path: str, new_excel_path: str, sheet_name: str, cell_name: str):
+def embed_image(excel_path: str, new_excel_path: str, sheet_name: str, head_name: str):
     # 解压excel
-    unzip_file_path = f"{excel_path}excelUnZipDir"
-    if os.path.exists(unzip_file_path):
-        shutil.rmtree(unzip_file_path)
-    unzip_file(excel_path, unzip_file_path)
+    unzip_dir_path = f"{excel_path}excelUnZipDir"
+    if os.path.exists(unzip_dir_path):
+        shutil.rmtree(unzip_dir_path)
+    unzip_file(excel_path, unzip_dir_path)
     # 读取Excel文件
     df = pd.read_excel(excel_path, sheet_name=sheet_name)
-    cell_index = df.columns.get_loc(cell_name)
-    logger.debug(f"Column '{cell_name}' is at index: {cell_index}")
-    for index in range(len(df.get(cell_name))):
-        picRow = str(df.get(cell_name)[index])
-        logger.debug(f"Picture row: {picRow}")
-        if picRow is None or not os.path.exists(picRow):
-            logger.debug(f"图片文件 {picRow} 不存在")
+    column_index = df.columns.get_loc(head_name)
+    logger.debug(f"Column '{head_name}' is at index: {column_index}")
+    for index in range(len(df.get(head_name))):
+        pic_local_path = str(df.get(head_name)[index])
+        logger.debug(f"Picture row: {pic_local_path}")
+        if pic_local_path is None or not os.path.exists(pic_local_path):
+            logger.debug(f"图片文件 {pic_local_path} 不存在")
             continue
-        ID = add_new_node(picRow, unzip_file_path)
-        add_sheet_data(unzip_file_path, sheet_name, ID, cell_index, index + 1)
-    zip_file(unzip_file_path, new_excel_path)
+        ID = add_new_node(pic_local_path, unzip_dir_path)
+        add_sheet_data(unzip_dir_path, sheet_name, ID, column_index, index + 1)
+    zip_file(unzip_dir_path, new_excel_path)
 
-    if os.path.exists(unzip_file_path):
-        shutil.rmtree(unzip_file_path)
+    if os.path.exists(unzip_dir_path):
+        shutil.rmtree(unzip_dir_path)
