@@ -246,7 +246,6 @@ def embed_image(excel_path: str, new_excel_path: str, sheet_name: str, cell_name
     df = pd.read_excel(excel_path, sheet_name=sheet_name)
     cell_index = df.columns.get_loc(cell_name)
     logger.debug(f"Column '{cell_name}' is at index: {cell_index}")
-    df: DataFrame = pd.read_excel(excel_path, sheet_name=sheet_name)
     for index in range(len(df.get(cell_name))):
         picRow = df.get(cell_name)[index]
         ID = add_new_node(picRow, unzip_file_path)
