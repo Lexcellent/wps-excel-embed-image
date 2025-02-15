@@ -261,7 +261,11 @@ def embed_image(excel_path: str, new_excel_path: str, sheet_name: str, cell_name
     cell_index = df.columns.get_loc(cell_name)
     logger.debug(f"Column '{cell_name}' is at index: {cell_index}")
     for index in range(len(df.get(cell_name))):
-        picRow = df.get(cell_name)[index]
+        picRow = str(df.get(cell_name)[index])
+        logger.debug(f"Picture row: {picRow}")
+        if picRow is None or not os.path.exists(picRow):
+            logger.debug(f"图片文件 {picRow} 不存在")
+            continue
         ID = add_new_node(picRow, unzip_file_path)
         add_sheet_data(unzip_file_path, sheet_name, ID, cell_index, index + 1)
     zip_file(unzip_file_path, new_excel_path)
